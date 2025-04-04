@@ -4,6 +4,9 @@ services:
     container_name: catalog-assistant
     ports:
       - "8501:8501"
+    # network_mode: "host" 
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
     env_file:
       - .env

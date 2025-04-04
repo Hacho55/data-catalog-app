@@ -1,0 +1,16 @@
+services:
+  catalog-app:
+    build: .
+    container_name: catalog-assistant
+    ports:
+      - "8501:8501"
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}

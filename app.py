@@ -27,9 +27,26 @@ if "step" not in st.session_state:
     st.session_state.step = 0
 if "df_edit" not in st.session_state:
     st.session_state.df_edit = None
+if "read_only" not in st.session_state:
+    st.session_state.read_only = False
 
 # --- Sidebar Configuration ---
 with st.sidebar:
+    with st.expander("🪵 Debug Log", expanded=False):
+        for entry in st.session_state.log[-50:]:
+            st.text(entry)
+
+    if st.button("🔄 Full reset"):
+        st.session_state.clear()
+        st.rerun()
+        
+    if st.button("🔁 Reset flow only"):
+        for k in ["step", "df", "df_edit", "schema", "table", "table_loaded", "log", "table_description"]:
+            st.session_state.pop(k, None)
+        st.rerun()
+
+    # st.checkbox("🔒 Read-only mode", key="read_only")
+    
     st.header("Configuration")
 
     st.subheader("🔐 OpenAI Settings")
@@ -105,6 +122,10 @@ schema = st.text_input("Schema", value=st.session_state.get("schema", "public"))
 table = st.text_input("Table", value=st.session_state.get("table", ""))
 
 if st.button("Load"):
+    # Reset flow state if reloading a table
+    for k in ["step", "df", "df_edit", "table_loaded", "table_description"]:
+        st.session_state.pop(k, None)
+        
     st.session_state.schema = schema
     st.session_state.table = table
     st.session_state.df = get_column_info(st.session_state.db_engine, schema, table)
